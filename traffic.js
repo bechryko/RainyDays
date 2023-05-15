@@ -7,7 +7,7 @@ class Tile {
         this.y = y;
     }
 
-    spread(color) {
+    spread(color, map) {
         if(this.color == color) {
             return;
         }
