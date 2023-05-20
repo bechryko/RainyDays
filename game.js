@@ -1,22 +1,6 @@
-class Game {
-    spreads = 0;
-    int = null;
-    control = {
-        x: mid.x,
-        y: mid.y,
-        down: false,
-        selected: SELECT.ROAD
-    };
-    gameplay = {
-        gate1color: SPREAD_COLORS[Math.floor(Math.random() * SPREAD_COLORS.length)],
-        gate2color: SPREAD_COLORS[Math.floor(Math.random() * SPREAD_COLORS.length)],
-        spawnerTimer: 0,
-        destinationTimer: 0,
-        score: 0,
-        highscore: storage.load(GAME_ID + "_highscore", 0)
-    };
-    
-    constructor() {
+let game = {
+    spreads: 0,
+    initializa() {
         let minSpreads = area.rows * area.cols * MIN_SPREAD_RATIO;
         while(this.spreads < minSpreads) {
             let rand = Math.floor(Math.random() * SPREAD_COLORS.length);
@@ -34,9 +18,9 @@ class Game {
         "4: second gate (" + game.gameplay.gate2color + ")\n" +
         "5: timed barrier");
 
-        this.int = window.setInterval(this.interval, DELTA_TIME * 1000);
-    }
-
+        this.int = window.setInterval(game.interval, DELTA_TIME * 1000);
+    },
+    int: null,
     interval() {
         for(let i = 0; i < 2; i++) {
             let timerName = ["spawner", "destination"][i] + "Timer";
@@ -137,6 +121,20 @@ class Game {
             }
         }
         drawAll();
+    },
+    control: {
+        x: mid.x,
+        y: mid.y,
+        down: false,
+        selected: SELECT.ROAD
+    },
+    gameplay: {
+        gate1color: SPREAD_COLORS[Math.floor(Math.random() * SPREAD_COLORS.length)],
+        gate2color: SPREAD_COLORS[Math.floor(Math.random() * SPREAD_COLORS.length)],
+        spawnerTimer: 0,
+        destinationTimer: 0,
+        score: 0,
+        highscore: storage.load(GAME_ID + "_highscore", 0)
     }
 };
 
