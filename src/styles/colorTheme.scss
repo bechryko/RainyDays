@@ -1,0 +1,24 @@
+@use '@angular/material' as mat;
+
+$RainyDays-primary: mat.define-palette(mat.$light-green-palette, 600, 300, 900);
+$RainyDays-accent: mat.define-palette(mat.$pink-palette, 600, A700, 300);
+
+$RainyDays-warn: mat.define-palette(mat.$red-palette);
+
+$RainyDays-theme: mat.define-light-theme((
+   color: (
+      primary: $RainyDays-primary,
+      accent: $RainyDays-accent,
+      warn: $RainyDays-warn,
+   )
+));
+
+@include mat.all-component-themes($RainyDays-theme);
+
+@function primaryColor($color) {
+   @return mat.get-color-from-palette($RainyDays-primary, $color);
+}
+
+@function accentColor($color) {
+   @return mat.get-color-from-palette($RainyDays-accent, $color);
+}

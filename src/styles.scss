@@ -1,0 +1,28 @@
+@use '@angular/material' as mat;
+@use './styles/colorTheme' as colorTheme;
+@include mat.core();
+
+* {
+   user-select: none;
+   box-sizing: border-box;
+}
+
+html,
+body {
+   height: 100%;
+   margin: 0;
+}
+
+body {
+   margin: 0;
+   font-family: Roboto, "Helvetica Neue", sans-serif;
+   overflow: hidden;
+}
+
+.center-content {
+   display: flex;
+   flex-direction: column;
+   justify-content: center;
+   align-items: center;
+   height: 100%;
+}

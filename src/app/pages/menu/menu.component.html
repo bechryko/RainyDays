@@ -1,0 +1,13 @@
+<mat-grid-list cols="2" rows="3" rowHeight="33%" id="grid-list">
+   <mat-grid-tile [colspan]="1" [rowspan]="1">
+      <h1>Rainy Days</h1>
+   </mat-grid-tile>
+   <mat-grid-tile [colspan]="1" [rowspan]="3">
+      <app-news></app-news>
+   </mat-grid-tile>
+   <mat-grid-tile [colspan]="1" [rowspan]="2">
+      <div class="buttons">
+         <button mat-flat-button color="accent" routerLink="/game">Play</button>
+      </div>
+   </mat-grid-tile>
+</mat-grid-list>

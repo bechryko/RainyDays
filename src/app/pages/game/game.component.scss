@@ -1,0 +1,14 @@
+@use 'src/styles/colorTheme' as colorTheme;
+
+div {
+   width: 100%;
+   padding: 1.5rem;
+   &#hud {
+      height: 10%;
+      background-color: colorTheme.primaryColor(600);
+   }
+   &#map {
+      height: 90%;
+      background-color: rgba(colorTheme.accentColor(500), 0.75);
+   }
+}

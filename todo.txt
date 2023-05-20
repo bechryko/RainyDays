@@ -1,4 +1,0 @@
- - csövek és utak alapból ne kapcsolódjanak össze, csak ha a játékos összehúzza
- - delay mechanika
- - utak és csövek könnyebb törlése
- - kelljen generáláskor egy minimum mennyiség minden színű mezőből
