@@ -34,6 +34,9 @@ export class MapComponent implements OnInit {
          case "selectTool":
             this.game?.selectTool(message.data);
             break;
+         case "pause":
+            this.game && (this.game.paused = message.data);
+            break;
       }
    }
 

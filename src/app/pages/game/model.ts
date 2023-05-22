@@ -12,4 +12,5 @@ export interface GameStatus {
    isGameGoing: boolean;
    isPaused: boolean;
    selected: number;
+   score: number;
 }

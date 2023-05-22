@@ -7,6 +7,10 @@ import { Colors, Tile } from "./Tile";
 import { GameMessage } from "../pages/game/model";
 
 export class Game {
+    static readonly SPAWNER_MESSAGE_TIME = 10;
+    static readonly DESTINATION_MESSAGE_TIME = 10;
+    static readonly DESTINATION_CRITICAL_HEALTH = 15;
+
     control = new Controller();
     private spawnerTimer = 0;
     private destinationTimer = 0;
@@ -76,9 +80,15 @@ export class Game {
             this.spawnerTimer = Spawner.SPAWN_TIMER;
             Spawner.spawnRandom(this.map);
         }
+        if(this.spawnerTimer < Game.SPAWNER_MESSAGE_TIME && this.spawnerTimer + deltaTime >= Game.SPAWNER_MESSAGE_TIME) {
+            this.eventEmitter.emit({ type: "spawnerTimer", data: Game.SPAWNER_MESSAGE_TIME });
+        }
         if((this.destinationTimer -= deltaTime) < 0) {
             this.destinationTimer = Destination.SPAWN_TIMER;
             Destination.spawnRandom(this.map);
+        }
+        if(this.destinationTimer < Game.DESTINATION_MESSAGE_TIME && this.destinationTimer + deltaTime >= Game.DESTINATION_MESSAGE_TIME) {
+            this.eventEmitter.emit({ type: "destinationTimer", data: Game.DESTINATION_MESSAGE_TIME });
         }
     }
     private buildingActions(deltaTime: number) {
@@ -86,6 +96,9 @@ export class Game {
             for (const tile of col) {
                 if(tile.building && ('tick' in tile.building)) {
                     (tile.building as BuildingWithTick).tick(deltaTime, tile);
+                    if(tile.building instanceof Destination && tile.building.health < Game.DESTINATION_CRITICAL_HEALTH && tile.building.health + deltaTime >= Game.DESTINATION_CRITICAL_HEALTH) {
+                        this.eventEmitter.emit({ type: "destinationHealth", data: Game.DESTINATION_CRITICAL_HEALTH });
+                    }
                 }
             }
         }
@@ -99,6 +112,7 @@ export class Game {
                 Car.pool.splice(i, 1); //TODO: object pool
                 currentBuilding.health += Destination.HEALING_PER_CAR;
                 this.score++;
+                this.eventEmitter.emit({ type: "score", data: this.score });
             }
         }
         for (const car1 of Car.pool) {
