@@ -6,6 +6,7 @@ import { GameComponent } from './game.component';
 import { HudComponent } from './hud/hud.component';
 import { MapComponent } from './map/map.component';
 
+import { MatButtonModule } from '@angular/material/button';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { MapComponent } from './map/map.component';
   imports: [
     CommonModule,
     GameRoutingModule,
+    MatButtonModule,
   ]
 })
 export class GameModule { }

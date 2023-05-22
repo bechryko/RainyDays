@@ -1,8 +1,10 @@
+import { EventEmitter } from "@angular/core";
 import { BuildingWithTick, Destination, Spawner } from "./Building";
 import { CanvasDrawer } from "./CanvasDrawer";
 import { Car } from "./Car";
 import { Controller, Selection } from "./Controller";
 import { Colors, Tile } from "./Tile";
+import { GameMessage } from "../pages/game/model";
 
 export class Game {
     control = new Controller();
@@ -21,7 +23,7 @@ export class Game {
     private eventListeners: EventListener[] = [];
     private canvasDrawer;
     
-    constructor(public spreadChance: number, public spreadRatio: number[], canvas: HTMLCanvasElement, area: {rows: number, cols: number}) {
+    constructor(public spreadChance: number, public spreadRatio: number[], canvas: HTMLCanvasElement, area: {rows: number, cols: number}, private eventEmitter: EventEmitter<GameMessage>) {
         this.area = area;
         for(let x = 0; x < area.cols; x++) {
             this.map[x] = [];
@@ -38,6 +40,7 @@ export class Game {
         this.canvasDrawer = new CanvasDrawer(canvas);
     }
     startGame() {
+        this.selectTool(1);
         this.initEventListeners();
         this.gameInterval(Date.now());
     }
@@ -48,10 +51,12 @@ export class Game {
             requestAnimationFrame(() => this.gameInterval(currentTime));
         } else {
             this.endOfGame();
+            this.eventEmitter.emit({ type: "isGameGoing", data: false });
         }
     }
     private main(deltaTime: number): boolean {
         if(!this.paused) {
+            deltaTime = Math.min(deltaTime, 0.1);
             this.timedActions(deltaTime);
             this.buildingActions(deltaTime);
             this.carActions(deltaTime);
@@ -133,33 +138,38 @@ export class Game {
             this.control.selectedTile = this.map[x][y];
         }));
         this.eventListeners.push(new EventListener("keydown", (e: KeyboardEvent) => {
-            switch(e.code) {
-                case "Digit1":
-                    this.control.selected = Selection.road;
-                    break;
-                case "Digit2":
-                    this.control.selected = Selection.tunnel;
-                    break;
-                case "Digit3":
-                    this.control.selected = Selection.gate1;
-                    break;
-                case "Digit4":
-                    this.control.selected = Selection.gate2;
-                    break;
-                case "Digit5":
-                    this.control.selected = Selection.timedGate;
-                    break;
-                case "Space":
-                    this.paused = !this.paused;
-                    break;
+            if(e.code === "Space") {
+                this.paused = !this.paused;
+                this.eventEmitter.emit({ type: "isPaused", data: this.paused });
+            } else if(+e.key >= 1 && +e.key <= 5) {
+                this.selectTool(+e.key);
             }
         }));
+    }
+    selectTool(number: number) {
+        switch(number) {
+            case 1:
+                this.control.selected = Selection.road;
+                break;
+            case 2:
+                this.control.selected = Selection.tunnel;
+                break;
+            case 3:
+                this.control.selected = Selection.gate1;
+                break;
+            case 4:
+                this.control.selected = Selection.gate2;
+                break;
+            case 5:
+                this.control.selected = Selection.timedGate;
+                break;
+        }
+        this.eventEmitter.emit({ type: "selected", data: number });
     }
     private endOfGame() {
         for(const el of this.eventListeners) {
             el.destroy();
         }
-        window.alert("Game over! Score: " + this.score);
     }
     getScore() {
         return this.score;

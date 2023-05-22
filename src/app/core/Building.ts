@@ -80,7 +80,7 @@ export class Destination extends Building implements BuildingWithTick {
    private static list: Destination[] = [];
 
    static readonly SPAWN_TIMER = 45;
-   static readonly STARTING_HEALTH = 125;
+   static readonly STARTING_HEALTH = 10;
    static readonly HEALTH_INCREASE = 5;
    static readonly HEALING_PER_CAR = 5;
 

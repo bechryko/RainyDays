@@ -18,7 +18,13 @@ $RainyDays-theme: mat.define-light-theme((
 @function primaryColor($color) {
    @return mat.get-color-from-palette($RainyDays-primary, $color);
 }
+@function primaryColorWithBlack($color) {
+   @return mix(black, primaryColor($color), 50%);
+}
 
 @function accentColor($color) {
    @return mat.get-color-from-palette($RainyDays-accent, $color);
+}
+@function accentColorWithBlack($color) {
+   @return mix(black, accentColor($color), 50%);
 }

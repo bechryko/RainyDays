@@ -1,5 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Game } from 'src/app/core/Game';
+import { GameMessage, InputMessage } from '../model';
 
 @Component({
    selector: 'app-map',
@@ -8,6 +9,8 @@ import { Game } from 'src/app/core/Game';
 })
 export class MapComponent implements OnInit {
    game?: Game;
+   @Output() gameEmitter = new EventEmitter<GameMessage>();
+   @Input() inputEmitter = new EventEmitter<InputMessage>();
 
    constructor() { }
 
@@ -18,8 +21,24 @@ export class MapComponent implements OnInit {
       this.game = new Game(
          0.42, [0.6, 0.7], 
          document.getElementById("gameCanvas") as HTMLCanvasElement, 
-         {rows: 15, cols: 30}
+         {rows: 15, cols: 30},
+         this.gameEmitter
       );
-      this.game.startGame();
+      this.inputEmitter.subscribe(message => this.getInputMessage(message));
+      this.startGame();
+   }
+
+   getInputMessage(message: any) {
+      message = message as InputMessage;
+      switch(message.type) {
+         case "selectTool":
+            this.game?.selectTool(message.data);
+            break;
+      }
+   }
+
+   startGame() {
+      this.gameEmitter.emit({ type: "isGameGoing", data: true });
+      this.game?.startGame();
    }
 }

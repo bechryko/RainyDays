@@ -1,6 +1,6 @@
 <div id="hud">
-   <app-hud></app-hud>
+   <app-hud [gameStatus]="gameStatus" (inputEmitter)="getInputMessage($event)"></app-hud>
 </div>
-<div id="map">
-   <app-map></app-map>
+<div id="map" class="center-content" [ngClass]="{'gameOver': !gameStatus.isGameGoing, 'paused': gameStatus.isPaused}">
+   <app-map [inputEmitter]="inputEmitter" (gameEmitter)="getGameMessage($event)"></app-map>
 </div>

@@ -1,0 +1,38 @@
+@use 'src/styles/colorTheme' as colorTheme;
+
+.center-content {
+   flex-direction: row;
+   * {
+      margin: 0 1rem;
+   }
+}
+
+#selectionBar {
+   div {
+      box-sizing: content-box;
+      border-radius: 0.5rem;
+      padding: 0.75rem;
+      border: 0.35rem solid colorTheme.primaryColor(600);
+      transition: border-color 0.25s ease-in-out;
+      &.selected {
+         border-color: colorTheme.primaryColorWithBlack(600);
+      }
+   }
+   p {
+      margin-right: 0.5rem;
+   }
+}
+
+button {
+   font-size: 1.25rem;
+   background-color: colorTheme.accentColor(800);
+}
+
+p {
+   font-size: 2rem;
+   &.gameOver {
+      font-size: 3rem;
+      //font-weight: bold;
+      color: colorTheme.accentColorWithBlack(500);
+   }
+}

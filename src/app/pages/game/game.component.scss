@@ -10,5 +10,11 @@ div {
    &#map {
       height: 90%;
       background-color: rgba(colorTheme.accentColor(500), 0.75);
+      &.paused {
+         background-color: grey;
+      }
+      &.gameOver {
+         background-color: red;
+      }
    }
 }
