@@ -80,8 +80,8 @@ export class Destination extends Building implements BuildingWithTick {
    private static list: Destination[] = [];
 
    static readonly SPAWN_TIMER = 45;
-   static readonly STARTING_HEALTH = 30;
-   static readonly HEALTH_INCREASE = 5;
+   static readonly STARTING_HEALTH = 45;
+   static readonly HEALTH_INCREASE = 0;
    static readonly HEALING_PER_CAR = 5;
 
    private static CURRENT_HEALTH = Destination.STARTING_HEALTH;
@@ -129,27 +129,30 @@ export class ColoredGate extends Gate {
 }
 
 export class TimedGate extends Gate implements BuildingWithTick {
-   static readonly BARRIER_TIMER = 2;
-   static readonly COLOR = "dimgrey";
+   static readonly BARRIER_TIMER = 4;
+   static readonly OPEN_COLOR = "#BBB";
+   static readonly CLOSED_COLOR = "#444";
+   static readonly DENY_COLOR = "red";
 
-   timer = 0;
+   timer = TimedGate.BARRIER_TIMER;
    closed = false;
 
    constructor() {
-      super(TimedGate.COLOR);
+      super(TimedGate.OPEN_COLOR);
    }
 
    switch(): void {
       this.closed = !this.closed;
+      this.color = this.closed ? TimedGate.CLOSED_COLOR : TimedGate.OPEN_COLOR;
    }
 
-   doesLetPass(car: Car): boolean {
+   doesLetPass(_: Car): boolean {
       return !this.closed;
    }
 
    tick(deltaTime: number, _: Tile): void {
       this.timer -= deltaTime;
-      if (this.timer < 0) {
+      if(this.timer < 0) {
          this.timer = TimedGate.BARRIER_TIMER;
          this.switch();
       }

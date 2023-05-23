@@ -20,6 +20,7 @@ export class Car {
         this.y = (spawnTile.y + 0.5) * Tile.SIZE;
         this.destination.tileX = spawnTile.x;
         this.destination.tileY = spawnTile.y;
+        spawnTile.tileAction(this);
         Car.pool.push(this);
     }
 

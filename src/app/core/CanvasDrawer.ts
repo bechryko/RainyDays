@@ -1,4 +1,4 @@
-import { ColoredGate, Destination, Gate, Spawner } from "./Building";
+import { ColoredGate, Destination, Gate, Spawner, TimedGate } from "./Building";
 import { Car } from "./Car";
 import { Tunnel } from "./Road";
 import { Tile } from "./Tile";
@@ -146,6 +146,12 @@ export class CanvasDrawer extends BasicDrawer {
     private drawGate(tile: Tile, gate: Gate) {
         this.square((tile.x + 0.25) * Tile.SIZE, (tile.y + 0.25) * Tile.SIZE, Tile.SIZE / 2);
         this.square((tile.x + 0.3) * Tile.SIZE, (tile.y + 0.3) * Tile.SIZE, Tile.SIZE * 0.4, gate.color);
+        if(gate instanceof TimedGate && gate.closed) {
+            this.strokeStyle = TimedGate.DENY_COLOR;
+            const width = Tile.SIZE * 0.05;
+            this.line((tile.x + 0.3) * Tile.SIZE + width / 2, (tile.y + 0.3) * Tile.SIZE + width / 2, (tile.x + 0.7) * Tile.SIZE - width / 2, (tile.y + 0.7) * Tile.SIZE - width / 2, width);
+            this.line((tile.x + 0.3) * Tile.SIZE + width / 2, (tile.y + 0.7) * Tile.SIZE - width / 2, (tile.x + 0.7) * Tile.SIZE - width / 2, (tile.y + 0.3) * Tile.SIZE + width / 2, width);
+        }
     }
     private drawSpawner(tile: Tile, spawner: Spawner) {
         this.circle((tile.x + 0.5) * Tile.SIZE, (tile.y + 0.5) * Tile.SIZE, Tile.SIZE / 4);

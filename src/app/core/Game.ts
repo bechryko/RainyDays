@@ -133,7 +133,6 @@ export class Game {
                     this.control.connectRoad = this.control.selectedTile;
                 }
             } else {
-                //e.preventDefault();
                 this.control.rightMouseDown = true;
             }
         }));
