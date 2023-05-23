@@ -42,8 +42,7 @@ export class GameComponent {
             break;
          case "destinationHealth":
             this.snackbarMessage(`One of your destinations has ${message.data} health!`, "I'll fix it!");
-            this.inputEmitter.emit({ type: "pause", data: true });
-            this.gameStatus.isPaused = true;
+            //this.pauseGame();
             break;
       }
    }
@@ -55,5 +54,10 @@ export class GameComponent {
 
    snackbarMessage(message: string, action: string) {
       this.snackbar.open(message, action, { duration: 3000 });
+   }
+
+   pauseGame() {
+      this.inputEmitter.emit({ type: "pause", data: true });
+      this.gameStatus.isPaused = true;
    }
 }

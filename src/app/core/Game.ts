@@ -69,7 +69,7 @@ export class Game {
         if(this.control.selectedTile && this.control.leftMouseDown) {
             this.control.leftMouseAction();
         } else if(this.control.selectedTile && this.control.rightMouseDown) {
-            this.control.rightMouseAction(this.control.selectedTile);
+            this.control.rightMouseAction(this.control.selectedTile, this.map);
         }
         // Draw
         this.canvasDrawer.drawAll(this.map);
@@ -128,6 +128,10 @@ export class Game {
         this.eventListeners.push(new EventListener("mousedown", (e: MouseEvent) => {
             if(e.button === 0) {
                 this.control.leftMouseDown = true;
+                if(this.control.selected == Selection.editorTool && this.control.selectedTile && this.control.selectedTile.road) {
+                    this.control.selected = Selection.roadConnect;
+                    this.control.connectRoad = this.control.selectedTile;
+                }
             } else {
                 //e.preventDefault();
                 this.control.rightMouseDown = true;
@@ -136,6 +140,9 @@ export class Game {
         this.eventListeners.push(new EventListener("mouseup", (e: MouseEvent) => {
             if(e.button === 0) {
                 this.control.leftMouseDown = false;
+                if(this.control.selected == Selection.roadConnect) {
+                    this.endRoadConnection();
+                }
             } else {
                 this.control.rightMouseDown = false;
             }
@@ -160,6 +167,9 @@ export class Game {
         }));
     }
     selectTool(number: number) {
+        if(this.control.selected == Selection.roadConnect) {
+            this.endRoadConnection();
+        }
         switch(number) {
             case 0:
                 this.control.selected = Selection.editorTool;
@@ -181,6 +191,10 @@ export class Game {
                 break;
         }
         this.eventEmitter.emit({ type: "selected", data: number });
+    }
+    private endRoadConnection() {
+        this.control.connectRoad = undefined;
+        this.control.selected = Selection.editorTool;
     }
     private endOfGame() {
         for(const el of this.eventListeners) {

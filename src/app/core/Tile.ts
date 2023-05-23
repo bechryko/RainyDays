@@ -60,31 +60,56 @@ export class Tile {
       }
    }
 
-   isUnlocked(car: Car): boolean {
+   isUnlocked(car: Car, map: Tile[][]): boolean {
       if(!this.road) {
          return false;
       }
-      if (this.building == null) {
+      const carTile = car.getTile(map);
+      const connectedRoads = carTile.getConnectedRoads(map);
+      let isConnected = false;
+      for(let i = 0; i < 4; i++) {
+         if(connectedRoads[i] && carTile.x + [1, 0, -1, 0][i] == this.x && carTile.y + [0, 1, 0, -1][i] == this.y) {
+            isConnected = true;
+            break;
+         }
+      }
+      if(!isConnected) {
+         return false;
+      }
+      if(this.building == null) {
          return true;
       }
-      if (this.building instanceof Gate) {
+      if(this.building instanceof Gate) {
          return this.building.doesLetPass(car);
       }
       return true;
    }
 
-   getNeighboringRoads(map: Tile[][]): boolean[] {
-      const neighboringRoads = [false, false, false, false];
-      for (let i = 0; i < 4; i++) {
-         const x = this.x + [1, 0, -1, 0][i];
-         const y = this.y + [0, 1, 0, -1][i];
-         if (x < 0 || x >= map.length || y < 0 || y >= map[0].length) {
-            continue;
-         }
-         if (map[x][y].road) {
-            neighboringRoads[i] = true;
+   connectRoad(tile: Tile) {
+      if(!this.road || !tile.road) {
+         return;
+      }
+      for(let i = 0; i < 4; i++) {
+         if(tile.x + [1, 0, -1, 0][i] == this.x && tile.y + [0, 1, 0, -1][i] == this.y) {
+            tile.road.connections[i] = true;
+            this.road.connections[(i + 2) % 4] = true;
+            break;
          }
       }
-      return neighboringRoads;
+   }
+
+   getConnectedRoads(map: Tile[][]): boolean[] {
+      const connectedRoads = [false, false, false, false];
+      for(let i = 0; i < 4; i++) {
+         const x = this.x + [1, 0, -1, 0][i];
+         const y = this.y + [0, 1, 0, -1][i];
+         if(x < 0 || x >= map.length || y < 0 || y >= map[0].length) {
+            continue;
+         }
+         if(map[x][y].road?.type == this.road?.type || this.road?.connections[i]) {
+            connectedRoads[i] = true;
+         }
+      }
+      return connectedRoads;
    }
 }

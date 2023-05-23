@@ -63,7 +63,7 @@ class BasicDrawer {
         this.fillStyle = "black";
         this.ctx.fillText(text, x, y);
     }
-    protected roadBase(x: number, y: number, neighboringRoads: boolean[], color: string, size: number) {
+    protected roadBase(x: number, y: number, connectedRoads: boolean[], color: string, size: number) {
         this.strokeStyle = color;
         this.lineWidth = size;
         this.lineCap = "round";
@@ -71,7 +71,7 @@ class BasicDrawer {
         this.ctx.moveTo((x + 0.5) * Tile.SIZE, (y + 0.5) * Tile.SIZE);
         this.ctx.lineTo((x + 0.5) * Tile.SIZE, (y + 0.5) * Tile.SIZE);
         for(let i = 0; i < 4; i++) {
-            if(neighboringRoads[i]) {
+            if(connectedRoads[i]) {
                 this.ctx.lineTo((x + 0.5 + [1, 0, -1, 0][i] / 2) * Tile.SIZE, (y + 0.5 + [0, 1, 0, -1][i] / 2) * Tile.SIZE);
                 this.ctx.moveTo((x + 0.5) * Tile.SIZE, (y + 0.5) * Tile.SIZE);
             }
@@ -103,7 +103,7 @@ export class CanvasDrawer extends BasicDrawer {
         // roads
         for(let x = 0; x < cols; x++) {
             for(let y = 0; y < rows; y++) {
-                this.drawRoad(map[x][y], map[x][y].getNeighboringRoads(map));
+                this.drawRoad(map[x][y], map[x][y].getConnectedRoads(map));
             }
         }
         // cars

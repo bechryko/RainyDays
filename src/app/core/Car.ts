@@ -59,7 +59,7 @@ export class Car {
             const targetX = this.destination.tileX + [1, 0, -1, 0][direction];
             const targetY = this.destination.tileY + [0, -1, 0, 1][direction];
             const targetTile = map[targetX]?.[targetY];
-            if(targetTile && targetTile.isUnlocked(this)) {
+            if(targetTile && targetTile.isUnlocked(this, map)) {
                 possibleDirections.push(direction);
             }
         }

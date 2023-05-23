@@ -3,7 +3,8 @@ import { BasicRoad, Road, Tunnel } from "./Road";
 import { Colors, Tile } from "./Tile";
 
 export enum Selection {
-   editorTool, road, tunnel, gate1, gate2, timedGate
+   editorTool, road, tunnel, gate1, gate2, timedGate,
+   roadConnect = -1
 }
 
 export class Controller {
@@ -11,6 +12,7 @@ export class Controller {
    leftMouseDown: boolean = false;
    rightMouseDown: boolean = false;
    selected: Selection = Selection.editorTool;
+   connectRoad?: Tile;
 
    readonly gate1Color: string;
    readonly gate2Color: string;
@@ -22,23 +24,40 @@ export class Controller {
    }
 
    leftMouseAction(): void {
+      if(!this.selectedTile) {
+         return;
+      }
       const building = this.getBuildingFromSelection();
-      if(building !== undefined && this.selectedTile !== undefined) {
+      if(building) {
          this.selectedTile.build(building);
-      } else {
-         console.error("Invalid selection");
+      } else if(this.selected == Selection.roadConnect && this.selectedTile.road) {
+         if(this.connectRoad) {
+            this.selectedTile.connectRoad(this.connectRoad);
+            this.connectRoad = this.selectedTile;
+         }
       }
    }
 
-   rightMouseAction(tile: Tile): void {
+   rightMouseAction(tile: Tile, map: Tile[][]): void {
       if(tile.building && this.selected == this.getSelectionTypeFromBuilding(tile.building)) {
          tile.building = null;
       } else if(tile.road && this.selected == this.getSelectionTypeFromBuilding(tile.road)) {
          tile.road = null;
+         for(let i = 0; i < 4; i++) {
+            const x = tile.x + [1, 0, -1, 0][i];
+            const y = tile.y + [0, 1, 0, -1][i];
+            if(x < 0 || x >= map.length || y < 0 || y >= map[x].length) {
+               continue;
+            }
+            const neighbor = map[x][y];
+            if(neighbor.road) {
+               neighbor.road.connections[(i + 2) % 4] = false;
+            }
+         }
       }
    }
 
-   private getBuildingFromSelection(): Building | Road | undefined {
+   private getBuildingFromSelection(): Building | Road | null {
       switch(this.selected) {
          case Selection.road:
             return new BasicRoad();
@@ -51,7 +70,7 @@ export class Controller {
          case Selection.timedGate:
             return new TimedGate();
       }
-      return;
+      return null;
    }
 
    private getSelectionTypeFromBuilding(building: Building | Road): Selection | undefined {
