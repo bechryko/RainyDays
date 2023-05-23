@@ -1,8 +1,8 @@
 <div *ngIf="gameStatus.isGameGoing" class="center-content">
    <div id="selectionBar" class="center-content">
-      <div *ngFor="let button of buttons; let idx = index" class="center-content" [ngClass]="{'selected': gameStatus.selected === idx + 1}">
-         <p>{{idx + 1}}</p>
-         <button mat-fab (click)="selectTool(idx + 1)">{{button}}</button>
+      <div *ngFor="let button of buttons; let idx = index" class="center-content" [ngClass]="{'selected': gameStatus.selected === idx}">
+         <p>{{idx}}</p>
+         <button mat-fab (click)="selectTool(idx)">{{button}}</button>
       </div>
    </div>
    <p class="score">Score: {{gameStatus.score}}</p>

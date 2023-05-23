@@ -16,6 +16,7 @@ export class HudComponent {
    };
    @Output() inputEmitter = new EventEmitter<InputMessage>();
    buttons = [
+      "editorTool",
       "road",
       "tunnel",
       "gate1",

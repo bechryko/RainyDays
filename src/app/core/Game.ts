@@ -137,7 +137,6 @@ export class Game {
             if(e.button === 0) {
                 this.control.leftMouseDown = false;
             } else {
-                this.control.deleteType = null;
                 this.control.rightMouseDown = false;
             }
         }));
@@ -155,13 +154,16 @@ export class Game {
             if(e.code === "Space") {
                 this.paused = !this.paused;
                 this.eventEmitter.emit({ type: "isPaused", data: this.paused });
-            } else if(+e.key >= 1 && +e.key <= 5) {
+            } else if(+e.key >= 0 && +e.key <= 5) {
                 this.selectTool(+e.key);
             }
         }));
     }
     selectTool(number: number) {
         switch(number) {
+            case 0:
+                this.control.selected = Selection.editorTool;
+                break;
             case 1:
                 this.control.selected = Selection.road;
                 break;

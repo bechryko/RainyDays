@@ -17,7 +17,7 @@ export class Tile {
 
    color = Colors.BASE_COLOR;
    road: Road | null = null;
-   building?: Building;
+   building: Building | null = null;
    x;
    y;
 
@@ -27,9 +27,9 @@ export class Tile {
    }
 
    build(object: Building | Road) {
-      if(object instanceof Building) {
+      if(!this.building && object instanceof Building) {
          this.building = object;
-      } else {
+      } else if(!this.road && object instanceof Road) {
          this.road = object;
       }
    }

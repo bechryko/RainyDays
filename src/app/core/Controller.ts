@@ -3,15 +3,14 @@ import { BasicRoad, Road, Tunnel } from "./Road";
 import { Colors, Tile } from "./Tile";
 
 export enum Selection {
-   road, tunnel, gate1, gate2, timedGate
+   editorTool, road, tunnel, gate1, gate2, timedGate
 }
 
 export class Controller {
    selectedTile?: Tile;
    leftMouseDown: boolean = false;
    rightMouseDown: boolean = false;
-   selected: Selection = Selection.road;
-   deleteType: Selection | null = null;
+   selected: Selection = Selection.editorTool;
 
    readonly gate1Color: string;
    readonly gate2Color: string;
@@ -31,17 +30,10 @@ export class Controller {
       }
    }
 
-   rightMouseAction(tile: Tile): void { //TODO: deletion fix
-      if(!this.deleteType) {
-         if(tile.building && tile.building.destructible) {
-            this.deleteType = this.getSelectionTypeFromBuilding(tile.building) ?? null;
-         } else if(tile.road) {
-            this.deleteType = this.getSelectionTypeFromBuilding(tile.road) ?? null;
-         }
-      }
-      if(tile.building && this.deleteType === this.getSelectionTypeFromBuilding(tile.building)) {
-         tile.building = undefined;
-      } else if(tile.road && this.deleteType === this.getSelectionTypeFromBuilding(tile.road)) {
+   rightMouseAction(tile: Tile): void {
+      if(tile.building && this.selected == this.getSelectionTypeFromBuilding(tile.building)) {
+         tile.building = null;
+      } else if(tile.road && this.selected == this.getSelectionTypeFromBuilding(tile.road)) {
          tile.road = null;
       }
    }
@@ -59,6 +51,7 @@ export class Controller {
          case Selection.timedGate:
             return new TimedGate();
       }
+      return;
    }
 
    private getSelectionTypeFromBuilding(building: Building | Road): Selection | undefined {
