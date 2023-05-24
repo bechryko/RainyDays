@@ -2,6 +2,8 @@ import { Car } from "./Car";
 import { Colors, Tile } from "./Tile";
 
 export abstract class Building {
+   static readonly MAIN_SPAWN_TIMER = 45;
+
    color: string;
    readonly destructible: boolean;
 
@@ -45,7 +47,6 @@ export interface BuildingWithTick {
 }
 
 export class Spawner extends Building implements BuildingWithTick {
-   static readonly SPAWN_TIMER = 45;
    static readonly GENERAL_CAR_SPAWN_TIMER = 4;
 
    timer = 0;
@@ -79,7 +80,6 @@ export class Spawner extends Building implements BuildingWithTick {
 export class Destination extends Building implements BuildingWithTick {
    private static list: Destination[] = [];
 
-   static readonly SPAWN_TIMER = 45;
    static readonly STARTING_HEALTH = 45;
    static readonly HEALTH_INCREASE = 0;
    static readonly HEALING_PER_CAR = 5;

@@ -5,7 +5,7 @@
          <button mat-fab (click)="selectTool(idx)">{{button}}</button>
       </div>
    </div>
-   <p class="score">Score: {{gameStatus.score}}</p>
+   <p class="score" matTooltip="New buildings spawn in {{gameStatus.spawnTimer}} seconds">Score: {{gameStatus.score}}</p>
 </div>
 <div *ngIf="!gameStatus.isGameGoing" class="center-content">
    <p class="gameOver">Game Over!</p>

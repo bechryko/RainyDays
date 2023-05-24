@@ -8,6 +8,7 @@ import { MapComponent } from './map/map.component';
 
 import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @NgModule({
   declarations: [
@@ -19,7 +20,8 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
     CommonModule,
     GameRoutingModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatTooltipModule,
   ]
 })
 export class GameModule { }

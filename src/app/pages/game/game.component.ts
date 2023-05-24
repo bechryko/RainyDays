@@ -13,7 +13,8 @@ export class GameComponent {
       isGameGoing: false,
       isPaused: false,
       selected: 0,
-      score: 0
+      score: 0,
+      spawnTimer: 0
    };
    inputEmitter = new EventEmitter<InputMessage>();
 
@@ -34,11 +35,11 @@ export class GameComponent {
          case "score":
             this.gameStatus.score = message.data;
             break;
-         case "spawnerTimer":
-            this.snackbarMessage(`New spawner spawns in ${message.data} seconds`, 'Understood');
-            break;
-         case "destnationTimer":
-            this.snackbarMessage(`New destination spawns in ${message.data} seconds`, 'Understood');
+         case "spawnTimer":
+            if(this.gameStatus.spawnTimer > 10 && message.data <= 10) {
+               this.snackbarMessage(`New spawner and destination spawns in ${message.data} seconds`, 'Understood');
+            }
+            this.gameStatus.spawnTimer = message.data;
             break;
          case "destinationHealth":
             this.snackbarMessage(`One of your destinations has ${message.data} health!`, "I'll fix it!");

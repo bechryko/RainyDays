@@ -1,5 +1,5 @@
 import { EventEmitter } from "@angular/core";
-import { BuildingWithTick, Destination, Spawner } from "./Building";
+import { Building, BuildingWithTick, Destination, Spawner } from "./Building";
 import { CanvasDrawer } from "./CanvasDrawer";
 import { Car } from "./Car";
 import { Controller, Selection } from "./Controller";
@@ -7,13 +7,11 @@ import { Colors, Tile } from "./Tile";
 import { GameMessage } from "../pages/game/model";
 
 export class Game {
-    static readonly SPAWNER_MESSAGE_TIME = 10;
-    static readonly DESTINATION_MESSAGE_TIME = 10;
+    static readonly SPAWN_MESSAGE_TIME = 10;
     static readonly DESTINATION_CRITICAL_HEALTH = 15;
 
     control = new Controller();
-    private spawnerTimer = 0;
-    private destinationTimer = 0;
+    private spawnTimer = 0;
     private score = 0;
     paused = false;
 
@@ -76,20 +74,12 @@ export class Game {
         return !Destination.anyWithZeroHealth();
     }
     private timedActions(deltaTime: number) {
-        if((this.spawnerTimer -= deltaTime) < 0) {
-            this.spawnerTimer = Spawner.SPAWN_TIMER;
+        if((this.spawnTimer -= deltaTime) < 0) {
+            this.spawnTimer = Building.MAIN_SPAWN_TIMER;
             Spawner.spawnRandom(this.map);
-        }
-        if(this.spawnerTimer < Game.SPAWNER_MESSAGE_TIME && this.spawnerTimer + deltaTime >= Game.SPAWNER_MESSAGE_TIME) {
-            this.eventEmitter.emit({ type: "spawnerTimer", data: Game.SPAWNER_MESSAGE_TIME });
-        }
-        if((this.destinationTimer -= deltaTime) < 0) {
-            this.destinationTimer = Destination.SPAWN_TIMER;
             Destination.spawnRandom(this.map);
         }
-        if(this.destinationTimer < Game.DESTINATION_MESSAGE_TIME && this.destinationTimer + deltaTime >= Game.DESTINATION_MESSAGE_TIME) {
-            this.eventEmitter.emit({ type: "destinationTimer", data: Game.DESTINATION_MESSAGE_TIME });
-        }
+        this.eventEmitter.emit({ type: "spawnTimer", data: Math.floor(this.spawnTimer) });
     }
     private buildingActions(deltaTime: number) {
         for(const col of this.map) {

@@ -12,7 +12,8 @@ export class HudComponent {
       isGameGoing: false,
       isPaused: false,
       selected: 1,
-      score: 0
+      score: 0,
+      spawnTimer: 0
    };
    @Output() inputEmitter = new EventEmitter<InputMessage>();
    buttons = [

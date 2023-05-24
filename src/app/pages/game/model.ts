@@ -13,4 +13,5 @@ export interface GameStatus {
    isPaused: boolean;
    selected: number;
    score: number;
+   spawnTimer: number;
 }
