@@ -10,6 +10,22 @@ export abstract class Colors {
    static randomColor(): string {
       return Colors.SPREAD_COLORS[Math.floor(Math.random() * Colors.SPREAD_COLORS.length)];
    }
+   static getColorObject() {
+      const colors: any = [];
+      for(let i = 0; i < Colors.SPREAD_COLORS.length; i++) {
+         colors[Colors.SPREAD_COLORS[i]] = 0;
+      }
+      colors.getSum = function() {
+         let sum = 0;
+         for(const c in this) {
+            if(typeof this[c] == "number") {
+               sum += this[c];
+            }
+         }
+         return sum;
+      }
+      return colors;
+   }
 }
 
 export class Tile {
@@ -25,7 +41,6 @@ export class Tile {
       this.x = x;
       this.y = y;
    }
-
    build(object: Building | Road) {
       if(!this.building && object instanceof Building) {
          this.building = object;
@@ -33,33 +48,33 @@ export class Tile {
          this.road = object;
       }
    }
-
    spread(color: string, game: Game) {
-      if (this.color == color) {
+      if(this.color == color) {
          return;
       }
-      if (this.color == Colors.BASE_COLOR) {
+      if(this.color == Colors.BASE_COLOR) {
          game.spreads++;
+      } else {
+         game.tileColors[this.color]--;
       }
       this.color = color;
-      for (let i = 0; i < 4; i++) {
-         if (Math.random() < game.spreadChance && game.spreads < game.area.rows * game.area.cols * game.spreadRatio[1]) {
-            let x = this.x + [1, 0, -1, 0][i];
-            let y = this.y + [0, 1, 0, -1][i];
-            if (x < 0 || x >= game.area.cols || y < 0 || y >= game.area.rows) {
+      game.tileColors[color]++;
+      for(let i = 0; i < 4; i++) {
+         if(Math.random() < game.rainCloudSizeDeviation && game.spreads < game.area.rows * game.area.cols * game.rainCloudSize[1]) {
+            const x = this.x + [1, 0, -1, 0][i];
+            const y = this.y + [0, 1, 0, -1][i];
+            if(x < 0 || x >= game.area.cols || y < 0 || y >= game.area.rows) {
                continue;
             }
             game.map[x][y].spread(color, game);
          }
       }
    }
-
    tileAction(car: Car): void {
       if(!(this.road instanceof Tunnel) && this.color != Colors.BASE_COLOR) {
          car.color = this.color;
       }
    }
-
    isUnlocked(car: Car, map: Tile[][]): boolean {
       if(!this.road) {
          return false;
@@ -84,7 +99,6 @@ export class Tile {
       }
       return true;
    }
-
    connectRoad(tile: Tile) {
       if(!this.road || !tile.road) {
          return;
@@ -97,7 +111,6 @@ export class Tile {
          }
       }
    }
-
    getConnectedRoads(map: Tile[][]): boolean[] {
       const connectedRoads = [false, false, false, false];
       for(let i = 0; i < 4; i++) {

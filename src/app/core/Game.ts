@@ -21,11 +21,12 @@ export class Game {
         rows: number,
         cols: number
     };
+    tileColors = Colors.getColorObject();
 
     private eventListeners: EventListener[] = [];
     private canvasDrawer;
     
-    constructor(public spreadChance: number, public spreadRatio: number[], canvas: HTMLCanvasElement, area: {rows: number, cols: number}, private eventEmitter: EventEmitter<GameMessage>) {
+    constructor(public rainCloudSizeDeviation: number, public rainCloudSize: number[], canvas: HTMLCanvasElement, area: {rows: number, cols: number}, private eventEmitter: EventEmitter<GameMessage>) {
         this.area = area;
         for(let x = 0; x < area.cols; x++) {
             this.map[x] = [];
@@ -33,13 +34,24 @@ export class Game {
                 this.map[x][y] = new Tile(x, y);
             }
         }
-        const minSpreads = this.area.rows * this.area.cols * spreadRatio[0];
+        const minSpreads = this.area.rows * this.area.cols * rainCloudSize[0];
         while(this.spreads < minSpreads) {
-            this.map[Math.floor(Math.random() * this.area.cols)][Math.floor(Math.random() * this.area.rows)].spread(Colors.randomColor(), this);
+            this.map[Math.floor(Math.random() * this.area.cols)][Math.floor(Math.random() * this.area.rows)].spread(this.chooseSpreadColor(), this);
         }
+        console.log(this.tileColors)
+        console.log(this.tileColors.getSum())
         canvas.width = area.cols * Tile.SIZE;
         canvas.height = area.rows * Tile.SIZE;
         this.canvasDrawer = new CanvasDrawer(canvas);
+    }
+    chooseSpreadColor(): string {
+        const colors: { color: string, count: number }[] = [];
+        for(const c in this.tileColors) {
+            colors.push({ color: c, count: this.tileColors[c] });
+        }
+        colors.sort((a, b) => a.count - b.count);
+        const possibleColors = Math.ceil(Colors.SPREAD_COLORS.length / 2);
+        return colors[Math.floor(Math.random() * possibleColors)].color;
     }
     startGame() {
         this.selectTool(1);

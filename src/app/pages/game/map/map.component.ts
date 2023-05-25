@@ -19,7 +19,7 @@ export class MapComponent implements OnInit {
          e.preventDefault();
       }, false);
       this.game = new Game(
-         0.42, [0.6, 0.7], 
+         0.38, [0.6, 0.7], 
          document.getElementById("gameCanvas") as HTMLCanvasElement, 
          {rows: 15, cols: 30},
          this.gameEmitter
