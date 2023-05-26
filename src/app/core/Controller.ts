@@ -1,4 +1,5 @@
 import { Building, ColoredGate, TimedGate } from "./Building";
+import { Random } from "./Random";
 import { BasicRoad, Road, Tunnel } from "./Road";
 import { Colors, Tile } from "./Tile";
 
@@ -16,10 +17,10 @@ export class Controller {
 
    readonly gate1Color: string;
    readonly gate2Color: string;
-   constructor() {
-      this.gate1Color = Colors.randomColor();
+   constructor(private random: Random) {
+      this.gate1Color = this.random.nextArrayElement(Colors.SPREAD_COLORS);
       do {
-         this.gate2Color = Colors.randomColor();
+         this.gate2Color = this.random.nextArrayElement(Colors.SPREAD_COLORS);
       } while (this.gate1Color == this.gate2Color);
    }
 

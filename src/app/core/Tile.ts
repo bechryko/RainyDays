@@ -7,9 +7,6 @@ export abstract class Colors {
    static readonly BASE_COLOR = "white";
    static readonly SPREAD_COLORS = ["dodgerblue", "gold", "firebrick", "greenyellow", "chocolate"];
 
-   static randomColor(): string {
-      return Colors.SPREAD_COLORS[Math.floor(Math.random() * Colors.SPREAD_COLORS.length)];
-   }
    static getColorObject() {
       const colors: any = [];
       for(let i = 0; i < Colors.SPREAD_COLORS.length; i++) {
@@ -60,7 +57,7 @@ export class Tile {
       this.color = color;
       game.tileColors[color]++;
       for(let i = 0; i < 4; i++) {
-         if(Math.random() < game.rainCloudSizeDeviation && game.spreads < game.area.rows * game.area.cols * game.rainCloudSize[1]) {
+         if(game.random.nextChance(game.rainCloudSizeDeviation) && game.spreads < game.area.rows * game.area.cols * game.rainCloudSize[1]) {
             const x = this.x + [1, 0, -1, 0][i];
             const y = this.y + [0, 1, 0, -1][i];
             if(x < 0 || x >= game.area.cols || y < 0 || y >= game.area.rows) {

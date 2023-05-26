@@ -5,12 +5,13 @@ import { Car } from "./Car";
 import { Controller, Selection } from "./Controller";
 import { Colors, Tile } from "./Tile";
 import { GameMessage } from "../pages/game/model";
+import { Random } from "./Random";
 
 export class Game {
     static readonly SPAWN_MESSAGE_TIME = 10;
     static readonly DESTINATION_CRITICAL_HEALTH = 15;
 
-    control = new Controller();
+    control: Controller;
     private spawnTimer = 0;
     private score = 0;
     paused = false;
@@ -26,7 +27,8 @@ export class Game {
     private eventListeners: EventListener[] = [];
     private canvasDrawer;
     
-    constructor(public rainCloudSizeDeviation: number, public rainCloudSize: number[], canvas: HTMLCanvasElement, area: {rows: number, cols: number}, private eventEmitter: EventEmitter<GameMessage>) {
+    constructor(public rainCloudSizeDeviation: number, public rainCloudSize: number[], canvas: HTMLCanvasElement, area: {rows: number, cols: number}, private eventEmitter: EventEmitter<GameMessage>, public random: Random) {
+        this.control = new Controller(this.random);
         this.area = area;
         for(let x = 0; x < area.cols; x++) {
             this.map[x] = [];
@@ -36,7 +38,7 @@ export class Game {
         }
         const minSpreads = this.area.rows * this.area.cols * rainCloudSize[0];
         while(this.spreads < minSpreads) {
-            this.map[Math.floor(Math.random() * this.area.cols)][Math.floor(Math.random() * this.area.rows)].spread(this.chooseSpreadColor(), this);
+            this.map[this.random.nextInt(this.area.cols)][this.random.nextInt(this.area.rows)].spread(this.chooseSpreadColor(), this);
         }
         console.log(this.tileColors)
         console.log(this.tileColors.getSum())
@@ -51,7 +53,8 @@ export class Game {
         }
         colors.sort((a, b) => a.count - b.count);
         const possibleColors = Math.ceil(Colors.SPREAD_COLORS.length / 2);
-        return colors[Math.floor(Math.random() * possibleColors)].color;
+        colors.splice(possibleColors);
+        return this.random.nextArrayElement(colors).color;
     }
     startGame() {
         this.selectTool(1);
@@ -88,8 +91,8 @@ export class Game {
     private timedActions(deltaTime: number) {
         if((this.spawnTimer -= deltaTime) < 0) {
             this.spawnTimer = Building.MAIN_SPAWN_TIMER;
-            Spawner.spawnRandom(this.map);
-            Destination.spawnRandom(this.map);
+            Spawner.spawnRandom(this.map, this.random);
+            Destination.spawnRandom(this.map, this.random);
         }
         this.eventEmitter.emit({ type: "spawnTimer", data: Math.floor(this.spawnTimer) });
     }
@@ -108,7 +111,7 @@ export class Game {
     private carActions(deltaTime: number) {
         for(let i = 0; i < Car.pool.length; i++) {
             const car = Car.pool[i];
-            car.move(deltaTime, this.map);
+            car.move(deltaTime, this.map, this.random);
             const currentBuilding = car.getTile(this.map).building;
             if(currentBuilding instanceof Destination && currentBuilding.color == car.color) {
                 Car.pool.splice(i, 1); //TODO: object pool

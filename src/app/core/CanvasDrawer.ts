@@ -154,8 +154,12 @@ export class CanvasDrawer extends BasicDrawer {
         }
     }
     private drawSpawner(tile: Tile, spawner: Spawner) {
-        this.circle((tile.x + 0.5) * Tile.SIZE, (tile.y + 0.5) * Tile.SIZE, Tile.SIZE / 4);
-        this.circle((tile.x + 0.5) * Tile.SIZE, (tile.y + 0.5) * Tile.SIZE, Tile.SIZE / 4.4, spawner.color);
+        this.lineWidth = 2;
+        this.circle((tile.x + 0.5) * Tile.SIZE, (tile.y + 0.5) * Tile.SIZE, Tile.SIZE / 4, spawner.color);
+        const circleSizeIncrease = Tile.SIZE / 4 / Spawner.MAX_POWER;
+        for(let i = 0; i < spawner.power; i++) {
+            this.circle((tile.x + 0.5) * Tile.SIZE, (tile.y + 0.5) * Tile.SIZE, Tile.SIZE / 4 + i * circleSizeIncrease, "black", false);
+        }
         this.text(Math.ceil(spawner.timer) + "s", (tile.x + 0.5) * Tile.SIZE, (tile.y + 0.5) * Tile.SIZE);
     }
     private drawDestination(tile: Tile, destination: Destination) {

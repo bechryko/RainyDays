@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { Game } from 'src/app/core/Game';
 import { GameMessage, InputMessage } from '../model';
+import { Random } from 'src/app/core/Random';
 
 @Component({
    selector: 'app-map',
@@ -19,10 +20,11 @@ export class MapComponent implements OnInit {
          e.preventDefault();
       }, false);
       this.game = new Game(
-         0.38, [0.6, 0.7], 
+         0.4, [0.6, 0.7], 
          document.getElementById("gameCanvas") as HTMLCanvasElement, 
          {rows: 15, cols: 30},
-         this.gameEmitter
+         this.gameEmitter,
+         new Random()
       );
       this.inputEmitter.subscribe(message => this.getInputMessage(message));
       this.startGame();

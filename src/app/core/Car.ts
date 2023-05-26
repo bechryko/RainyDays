@@ -1,5 +1,5 @@
-import { BasicRoad } from "./Road";
-import { Colors, Tile } from "./Tile";
+import { Random } from "./Random";
+import { Tile } from "./Tile";
 
 export enum Direction {
     right, up, left, down, none
@@ -24,7 +24,7 @@ export class Car {
         Car.pool.push(this);
     }
 
-    move(deltaTime: number, map: Tile[][]): void {
+    move(deltaTime: number, map: Tile[][], random: Random): void {
         const dest = {
             x: (this.destination.tileX + 0.5) * Tile.SIZE,
             y: (this.destination.tileY + 0.5) * Tile.SIZE
@@ -48,12 +48,12 @@ export class Car {
         if(Math.abs(this.x - dest.x) + Math.abs(this.y - dest.y) >= distance) {
             this.x = dest.x;
             this.y = dest.y;
-            this.searchNewDestination(map);
+            this.searchNewDestination(map, random);
         }
         this.getTile(map).tileAction(this);
     }
 
-    searchNewDestination(map: Tile[][]) {
+    searchNewDestination(map: Tile[][], random: Random): void {
         const possibleDirections = [];
         let direction = Direction.right;
         for(let d = 0; d < 4; d++, direction = (direction + 1) % 4) {
@@ -70,7 +70,7 @@ export class Car {
         } else if(possibleDirections.length != 1 && possibleDirections.includes((this.lastDirection + 2) % 4)) {
             possibleDirections.splice(possibleDirections.indexOf((this.lastDirection + 2) % 4), 1);
         }
-        this.lastDirection = possibleDirections[Math.floor(Math.random() * possibleDirections.length)];
+        this.lastDirection = random.nextArrayElement(possibleDirections);
         switch(this.lastDirection) {
             case Direction.up:
                 this.destination.tileY--;
