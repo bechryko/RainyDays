@@ -1,5 +1,9 @@
+import seedrandom from 'seedrandom';
+
 export class Random {
-   constructor() { } //TODO: seed random
+   constructor(seed: string) {
+      seedrandom(seed, { global: true });
+   }
    nextInt(max: number) {
       return this.nextIntRange(0, max);
    }

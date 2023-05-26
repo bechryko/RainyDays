@@ -24,7 +24,7 @@ export class MapComponent implements OnInit {
          document.getElementById("gameCanvas") as HTMLCanvasElement, 
          {rows: 15, cols: 30},
          this.gameEmitter,
-         new Random()
+         new Random(Math.random().toString())
       );
       this.inputEmitter.subscribe(message => this.getInputMessage(message));
       this.startGame();
