@@ -7,7 +7,19 @@
    </mat-grid-tile>
    <mat-grid-tile [colspan]="1" [rowspan]="2">
       <div class="buttons">
-         <button mat-flat-button color="accent" routerLink="/game">Play</button>
+         <ng-container *ngIf="buttonGroup == 'menu'">
+            <button mat-flat-button color="accent" (click)="startQuickGame()">Quick play</button>
+            <button mat-flat-button color="accent" (click)="switchButtonGroup('setupGame')">Setup game</button>
+         </ng-container>
+         <form [formGroup]="setupGameForm" (ngSubmit)="startCustomGame()" *ngIf="buttonGroup == 'setupGame'">
+            <mat-form-field color="accent">
+               <mat-label>Game seed</mat-label>
+               <input matInput placeholder="Enter your favorite seed!" type="text" formControlName="seed">
+               <mat-icon matSuffix color="accent">terminal</mat-icon>
+            </mat-form-field>
+            <button mat-flat-button color="accent" type="submit">Start</button>
+            <button mat-flat-button color="accent" type="reset" (click)="switchButtonGroup('menu')">Back</button>
+         </form>
       </div>
    </mat-grid-tile>
 </mat-grid-list>

@@ -21,6 +21,16 @@ h1 {
    }
 }
 
+form {
+   * {
+      width: 100%;
+   }
+   button {
+      margin-left: 0 !important;
+      margin-right: 0 !important;
+   }
+}
+
 app-news {
    height: 80%;
    width: 80%;
