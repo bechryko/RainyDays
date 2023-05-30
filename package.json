@@ -1,6 +1,6 @@
 {
   "name": "rainy-days",
-  "version": "0.0.0",
+  "version": "Beta 1",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",

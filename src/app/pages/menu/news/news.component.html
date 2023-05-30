@@ -1,1 +1,22 @@
-<p>news works!</p>
+<h2>News</h2>
+<mat-tab-group color="accent">
+   <mat-tab label="Trending">
+      <article *ngFor="let article of trendingNews">
+         <h3>{{article.title}}</h3>
+         <p *ngFor="let text of article.text">{{text}}</p>
+      </article>
+   </mat-tab>
+   <mat-tab label="Latest patch notes">
+      <h3>{{latestPatchNote?.version}}</h3>
+      <p>Released: {{latestPatchNote?.date}}</p>
+      <ul>
+         <li *ngFor="let note of latestPatchNote?.content">{{note}}</li>
+      </ul>
+   </mat-tab>
+   <mat-tab label="Newest tips">
+      <article *ngFor="let tip of currentTips">
+         <h3>{{tip.name}}</h3>
+         <p>{{tip.description}}</p>
+      </article>
+   </mat-tab>
+</mat-tab-group>
